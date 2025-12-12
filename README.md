@@ -2,39 +2,74 @@
 
 A brief, example-driven introduction to fundamental C++ datatypes, intended for beginners and learners.
 
-## Contents
-- Overview
-- What’s in this repository
-- Primitive types and typical sizes
-- Signed vs unsigned
-- Floating point types
-- Characters and strings
-- Literals, constants, and suffixes
-- Type conversion and casting
-- Modern C++ helpers (auto, nullptr, enum class)
-- Example and how to build
-- Contributing
-- License
-
-## Overview
-This repository provides a compact explanation of built-in C++ datatypes, common pitfalls, and small example code you can compile to inspect sizes, limits, and basic conversions on your platform.
-
-## What’s in this repository
-- Short explanations and notes about common C++ datatypes
-- Small example demonstrating sizeof, numeric limits, casting, and auto/type deduction (examples/types_demo.cpp)
 
 ## Primitive types (typical sizes on 64-bit Linux/macOS — implementation defined)
 - bool — 1 byte
 - char / signed char / unsigned char — 1 byte
 - short (short int) — usually 2 bytes
 - int — usually 4 bytes
-- long (long int) — usually 8 bytes on LP64, 4 bytes on LLP64 (Windows)
+- long (long int) — usually 8 bytes
 - long long (long long int) — usually 8 bytes
 - float — 4 bytes
 - double — 8 bytes
 - long double — platform dependent (often 16 bytes)
 
-Use sizeof(T) to verify sizes on your target platform.
+
+## Derived datatypes
+
+Derived datatypes are built from primitives and include:
+- Arrays — contiguous sequences of elements.
+  - C-style: int a[3];
+  - std::array and std::vector are safer, dynamic alternatives.
+- Pointers — hold addresses of objects; allow dynamic allocation and indirection.
+  - int *p = &x;
+- References — aliases for existing objects; must be initialized and cannot be reseated.
+  - int &r = x;
+- Functions and function pointers — functions are types; pointers/reference-to-function let you pass callbacks.
+  - using Func = int(*)(int,int);
+- cv-qualified types (const / volatile) and pointer-to-member types.
+
+
+Example:
+```c++
+int arr[3] = {1,2,3};
+int *p = arr;       
+int &r = arr[0];   
+```
+
+## User-defined datatypes
+- User-defined types let you model domain concepts:
+
+ - struct vs class
+    struct: members default to public.
+    class: members default to private.
+ - enum / enum class
+    enum class Color { Red, Green }; // scoped, strongly typed
+ - union — overlapping storage for different members (use with care).
+
+ - typedef / using — create aliases.
+
+ - Templates — parametric polymorphism for types and functions.
+
+Example :
+```c++
+struct Point {
+    double x{};
+    double y{};
+};
+
+class Person {
+private:
+    std::string name;
+    int age;
+public:
+    Person(std::string n, int a) : name(std::move(n)), age(a) {}
+    std::string get_name() const { return name; }
+    int get_age() const { return age; }
+};
+
+```
+
 
 ## Signed vs Unsigned
 - Signed types represent negative and positive values.
@@ -49,11 +84,7 @@ Use sizeof(T) to verify sizes on your target platform.
 - char stores a character or small integer value.
 - Use std::string for text. Consider char16_t/char32_t or encoding libraries for Unicode/UTF handling.
 
-## Literals and constants
-- Integer: 42, 0xff (hex), 0b1010 (binary, C++14+), 042 (octal)
-- Floating: 3.14, 2.5e-3
-- Suffixes: u / U (unsigned), l / L (long), ll / LL (long long), f / F (float)
-- Use const or constexpr for compile-time constants
+
 
 ## Type conversion and casting
 - Implicit conversions occur automatically; be cautious of narrowing and overflow.
@@ -72,7 +103,7 @@ Use sizeof(T) to verify sizes on your target platform.
 ## Example: print sizes and numeric limits
 Save the following as examples/types_demo.cpp and compile it:
 
-```cpp
+```c++
 #include <iostream>
 #include <limits>
 #include <cstdint>
@@ -102,26 +133,3 @@ int main() {
 
     return 0;
 }
-```
-
-## Build & run
-Using g++:
-
-```
-g++ -std=c++17 -O2 -Wall examples/types_demo.cpp -o types_demo
-./types_demo
-```
-
-Using clang++:
-
-```
-clang++ -std=c++17 -O2 -Wall examples/types_demo.cpp -o types_demo
-./types_demo
-```
-
-## Contributing
-Contributions and improvements are welcome. Suggested additions:
-- More examples (pointers, references, arrays, structs)
-- Platform-specific notes (Windows vs Linux/macOS differences)
-- Examples showing undefined/implementation-defined behavior
-
